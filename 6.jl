@@ -1,14 +1,9 @@
-using AbstractTrees
-import AbstractTrees: children, printnode
 using DelimitedFiles
 
 mutable struct Object{T}
     child::T
     Object{T}() where T = new{T}()
 end
-
-children(o::Object) = ( o.child )
-printnode(io::IO, d::Object) = print(io, "O")
 
 function parse_input(def)
     d = Dict{String, Object}()
