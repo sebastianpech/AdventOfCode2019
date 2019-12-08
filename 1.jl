@@ -9,7 +9,7 @@ using DelimitedFiles
 
 required_fuel(m) = floor(m/3)-2
 
-data = readdlm("1-1.input")
+data = readdlm("1.input")
 
 Int(mapreduce(required_fuel,+,data))
 

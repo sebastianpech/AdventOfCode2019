@@ -46,7 +46,7 @@ end
 t = parse_input(v)
 sum(count_til_last.(values(t)))
 
-f = readdlm("input-6.txt")
+f = readdlm("6.input")
 t = parse_input(f)
 sum(count_til_last.(values(t)))
 

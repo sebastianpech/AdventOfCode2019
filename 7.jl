@@ -38,7 +38,7 @@ code = [3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33, 1002,33,7,33,1,33,31
 amplifier = setup_amplifierd_code(code)
 find_max_phase(amplifier)
 
-code = intcode_from_file("input-7.txt")
+code = intcode_from_file("7.input")
 amplifier = setup_amplifierd_code(code)
 find_max_phase(amplifier)
 
@@ -80,5 +80,5 @@ phase_setting = [9,7,8,5,6 ]
 eval_phase_feedback(code, phase_setting)
 find_max_phase_feedback(code)
 
-code = intcode_from_file("input-7.txt")
+code = intcode_from_file("7.input")
 find_max_phase_feedback(code)
