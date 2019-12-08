@@ -27,8 +27,3 @@ function render(img)
 end
 
 render(reduce_img(imgs))
-
-using Plots
-
-
-
