@@ -10,15 +10,17 @@ count(==(1),imgs[:,:,layer_min_zero]) * count(==(2),imgs[:,:,layer_min_zero])
 function reduce_img(img)
     new_img = zeros(Int,25,6)
     for r in 1:25, c in 1:6
-            idx = findfirst(!(==(2)),img[r,c,:])
-            new_img[r,c] = img[r,c,idx]
-        end
+        idx = findfirst(!(==(2)),img[r,c,:])
+        new_img[r,c] = img[r,c,idx]
     end
     new_img
 end
 
+using Images
+
 function render(img)
-    for c in 1:size(img,2), r in 1:size(img,1)
+    for c in 1:size(img,2)
+        for r in 1:size(img,1)
             img[r,c] == 0 && print("█")
             img[r,c] == 1 && print(" ")
         end
