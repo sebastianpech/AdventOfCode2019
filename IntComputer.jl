@@ -4,7 +4,7 @@ export run!, intcode_from_file
 
 using OffsetArrays
 
-function param(intcode,modes::Vector{T},p, n, relative_base) where T
+function get_modebased_position(intcode,modes::Vector{T},p, n, relative_base, setting = false) where T
     mode = length(modes) >= n ? modes[n] : 0
     if mode == 0
         pos = intcode[p+n]
@@ -20,25 +20,19 @@ function param(intcode,modes::Vector{T},p, n, relative_base) where T
         resize!(intcode,pos+1)
         intcode[N:end] .= zero(T)
     end
+    if setting && mode == 1
+        error("Can't set parameters with mode '$mode'")
+    end
+    return pos
+end
+
+function param(intcode,modes::Vector,p, n, relative_base)
+    pos = get_modebased_position(intcode,modes, p, n, relative_base)
     return intcode[pos]
 end
 
 function param!(intcode,modes::Vector{T},p, n, relative_base, val) where T
-    mode = length(modes) >= n ? modes[n] : 0
-    if mode == 0
-        pos = intcode[p+n]
-    elseif mode == 1
-        error("Can't set parameters with mode '$mode'")
-    elseif mode == 2
-        pos = intcode[p+n]+relative_base[]
-    else
-        error("Unknown parameter mode '$mode'")
-    end
-    if pos > length(intcode)-1
-        N = length(intcode)
-        resize!(intcode,pos+1)
-        intcode[N:end] .= zero(T)
-    end
+    pos = get_modebased_position(intcode,modes, p, n, relative_base, true)
     intcode[pos] = val
     return nothing
 end
