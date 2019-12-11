@@ -57,7 +57,6 @@ locs = paint("11.input",WHITE)
 function render(locations)
     x = [c[1] for c in keys(locations)]
     y = [c[2] for c in keys(locations)]
-    min_x,min_y = minimum(x), minimum(y)
     current_row = coords[1][2]
     for y in minimum(y):maximum(y)
         for x in minimum(x):maximum(x)
@@ -74,5 +73,25 @@ end
 
 render(locs)
 
+using JuliaKara
 
+function paint(kara,file)
+    robot = intcode_from_file(file) |> init_robot
+    while true
+        current_color = onLeaf(kara) ? WHITE : BLACK
+        operation = robot(current_color)
+        operation == nothing && break
+        if operation[1] == WHITE && !onLeaf(kara)
+            putLeaf(kara)
+        elseif operation[1] == BLACK && onLeaf(kara)
+            removeLeaf(kara)
+        end
+        operation[2] == LEFT  && turnLeft(kara)
+        operation[2] == RIGHT && turnRight(kara)
+        move(kara)
+    end
+end
 
+@World (50,15)
+paint(kara,"11.input")
+reset!(world)
