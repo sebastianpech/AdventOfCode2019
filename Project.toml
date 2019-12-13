@@ -2,5 +2,6 @@
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 JuliaKara = "e742bb3c-81eb-5c15-8577-c54658a6ac7f"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
