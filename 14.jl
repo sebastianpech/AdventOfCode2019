@@ -84,19 +84,27 @@ f = Factory(parse_input(read("14.input",String)))
 produce!(f,:FUEL,1)
 f.ore_counter
 
-using ProgressMeter
 
 function part02(input)
-    f = Factory(parse_input(read(input,String)))
-    c = 0
-    p = ProgressUnknown("Calculating")
-    while f.ore_counter < 1000000000000
-        produce!(f,:FUEL,1)
-        next!(p)
-        c += 1
+    fuel = 1
+    stepsize = 10000
+    while true
+        f = Factory(parse_input(read(input,String)))
+        produce!(f,:FUEL,fuel)
+        if f.ore_counter < 1000000000000
+            fuel += stepsize
+        else
+            fuel -= stepsize
+            f = Factory(parse_input(read(input,String)))
+            produce!(f,:FUEL,fuel)
+            c = 0
+            while f.ore_counter < 1000000000000
+                produce!(f,:FUEL,1)
+                c+=1
+            end
+            return fuel+c-1
+        end
     end
-    finish!(p)
-    return c
 end
 
 part02("14.input")
