@@ -6,11 +6,11 @@ const SOUTH = 2
 const WEST  = 3
 const EAST  = 4
 
-oposit(direction::Int) = oposit(Val(direction))
-oposit(::Val{NORTH}) = SOUTH
-oposit(::Val{SOUTH}) = NORTH
-oposit(::Val{EAST}) = WEST
-oposit(::Val{WEST}) = EAST
+opposite(direction::Int) = opposite(Val(direction))
+opposite(::Val{NORTH}) = SOUTH
+opposite(::Val{SOUTH}) = NORTH
+opposite(::Val{EAST}) = WEST
+opposite(::Val{WEST}) = EAST
 
 const HITWALL = 0
 const SUCCESS = 1
@@ -70,10 +70,10 @@ function scan_area(r,counter=0,distance_to=Dict((0,0)=>0))
         if res == SUCCESS
             distance_to[r.location] = counter+1
             scan_area(r,counter+1,distance_to)
-            move!(r,oposit(direction))
+            move!(r,opposite(direction))
         elseif res == FOUND
             distance_to[r.location] = counter+1
-            move!(r,oposit(direction))
+            move!(r,opposite(direction))
             return
         end
     end
