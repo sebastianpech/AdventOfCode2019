@@ -220,15 +220,12 @@ end
 
 function part2(file,seq,combinations)
     code = intcode_from_file(file)
-    main = to_terminated_ascii(seq)
+    commands = to_terminated_ascii(seq)
     combs = to_terminated_ascii.(combinations)
     code[1] = 2 # Wake up robot
-    commands = vcat(
-        main...,
-        combs[1]...,
-        combs[2]...,
-        combs[3]...,
-        Int('n'),Int('\n'))
+    append!.(Ref(commands),combs)
+    push!(commands,Int('n'))
+    push!(commands,Int('\n'))
     run!(code,input=commands)
 end
 
