@@ -1,5 +1,8 @@
 using Revise
 includet("IntComputer.jl"); using .IntComputer
+using Combinatorics
+
+# Part 1
 
 parse_output(out) = transpose(reshape(out[1:end-1],findfirst(==(Int('\n')),out),:))[1:end,1:end-1]
 
@@ -14,6 +17,8 @@ intersections = [(r,c) for (r,c) in Iterators.product(2:size(parsed,1)-1,2:size(
 mapreduce(+,intersections) do inter
     *(inter[1]-1,inter[2]-1)
 end
+
+# Part 2
 
 const Point = Tuple{Int,Int}
 
@@ -172,49 +177,51 @@ function replace_combination!(log,combination,rep)
 end
 
 function find_optimum(log,comb)
-    combinations = keys(comb)
     best_val = length(log)
     best_comb = Vector{Any}(undef,3)
-    for c1 in combinations
-        for c2 in combinations
-            c1 == c2 && continue
-            for c3 in combinations
-                c1 == c3 && continue
-                c2 == c3 && continue
-                _log = copy(log)
-                replace_combination!(_log,c1,:A)
-                replace_combination!(_log,c2,:B)
-                replace_combination!(_log,c3,:C)
-                if length(_log) < best_val
-                    best_val = length(_log)
-                    best_comb[1] = c1
-                    best_comb[2] = c2
-                    best_comb[3] = c3
-                end
+    for (c1,c2,c3) in combinations(collect(keys(comb)),3)
+        _log = copy(log)
+        replace_combination!(_log,c1,:A)
+        replace_combination!(_log,c2,:B)
+        replace_combination!(_log,c3,:C)
+        if length(_log) < best_val
+            best_val = length(_log)
+            best_comb[1] = c1
+            best_comb[2] = c2
+            best_comb[3] = c3
+            # If everything was replaced an the length fits in memory, it quite likely is the solution
+            if all(isa.(_log,Symbol)) && 2*length(_log)-1 <= 20
+                break
             end
         end
     end
     return best_comb, best_val
 end
 
+function to_terminated_ascii(seq)
+    out = Int[]
+    for c in seq
+        if c isa Symbol 
+            push!(out,Int(first(string(c))))
+        elseif c >= 10
+            c1 = c÷2
+            c2 = c-c1
+            push!(out,c1+48)
+            push!(out,Int(','))
+            push!(out,c2+48)
+        else
+            push!(out,c+48)
+        end
+        push!(out,Int(','))
+    end
+    out[end] = Int('\n')
+    return out
+end
+
 function part2(file,seq,combinations)
     code = intcode_from_file(file)
-    main = Int.(first.(split(join(string.(seq),','),"")))
-    push!(main,Int('\n'))
-    combs = collect.(Iterators.flatten.(map(combinations) do comb
-        foldr(map(comb) do c
-            c isa Symbol && return Int(first(string(c)))
-            if c >= 10
-                c1 = c÷2
-                c2 = c-c1
-                return c1+48,Int(','),c2+48
-            end
-            return c+48
-        end) do a,b
-            vcat(a,Int(','),b)
-        end
-    end))
-    push!.(combs,Ref(Int('\n')))
+    main = to_terminated_ascii(seq)
+    combs = to_terminated_ascii.(combinations)
     code[1] = 2 # Wake up robot
     commands = vcat(
         main...,
@@ -234,4 +241,4 @@ best_comb, best_val = find_optimum(robot.log,sequences)
 main_code = copy(robot.log)
 replace_combination!.(Ref(main_code),best_comb,[:A,:B,:C])
 
-out = part2("17.input", main_code, best_comb)
+part2("17.input", main_code, best_comb)[end]
